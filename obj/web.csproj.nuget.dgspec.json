@@ -1,31 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "/Users/kadir/web/web.csproj": {}
+    "/Users/kadir/Desktop/barberapp/web.csproj": {}
   },
   "projects": {
-    "/Users/kadir/web/web.csproj": {
+    "/Users/kadir/Desktop/barberapp/web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/kadir/web/web.csproj",
+        "projectUniqueName": "/Users/kadir/Desktop/barberapp/web.csproj",
         "projectName": "web",
-        "projectPath": "/Users/kadir/web/web.csproj",
+        "projectPath": "/Users/kadir/Desktop/barberapp/web.csproj",
         "packagesPath": "/Users/kadir/.nuget/packages/",
-        "outputPath": "/Users/kadir/web/obj/",
+        "outputPath": "/Users/kadir/Desktop/barberapp/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/kadir/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net7.0"
+          "net8.0"
         ],
         "sources": {
           "/usr/local/share/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net7.0": {
-            "targetAlias": "net7.0",
+          "net8.0": {
+            "targetAlias": "net8.0",
             "projectReferences": {}
           }
         },
@@ -33,11 +33,22 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
-        "net7.0": {
-          "targetAlias": "net7.0",
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+              "target": "Package",
+              "version": "[9.0.2, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -57,7 +68,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.203/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.404/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
