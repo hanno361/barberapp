@@ -1,87 +1,63 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using barberapp.Models;
+using barberapp.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace barberapp.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly ApplicationDbContext _context;
 
-        public AccountController(
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+        public AccountController(ApplicationDbContext context)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            _context = context;
         }
 
-        [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(string email, string password)
         {
-            if (ModelState.IsValid)
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+            if (user != null)
             {
-                var result = await _signInManager.PasswordSignInAsync(
-                    model.Email, 
-                    model.Password, 
-                    model.RememberMe, 
-                    lockoutOnFailure: false);
-
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-
-                ModelState.AddModelError(string.Empty, "Geçersiz giriş denemesi.");
+                HttpContext.Session.SetInt32("UserId", user.Id);
+                HttpContext.Session.SetString("UserName", user.FullName);
+                return RedirectToAction("Index", "Home");
             }
-            return View(model);
+            ViewBag.Error = "Hatalı email veya şifre";
+            return View();
         }
 
-        [HttpGet]
         public IActionResult Signup()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Signup(SignupViewModel model)
+        public IActionResult Signup(string email, string password, string fullName)
         {
-            if (ModelState.IsValid)
+            var user = new User
             {
-                var user = new ApplicationUser 
-                { 
-                    UserName = model.Email, 
-                    Email = model.Email,
-                    FullName = model.FullName
-                };
+                Email = email,
+                Password = password,
+                FullName = fullName
+            };
 
-                var result = await _userManager.CreateAsync(user, model.Password);
-
-                if (result.Succeeded)
-                {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
-                }
-
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-            }
-            return View(model);
+            _context.Users.Add(user);
+            _context.SaveChanges();
+            return RedirectToAction("Login");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
-            await _signInManager.SignOutAsync();
+            HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
         }
     }

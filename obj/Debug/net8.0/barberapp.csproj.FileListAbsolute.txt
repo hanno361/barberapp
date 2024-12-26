@@ -131,9 +131,7 @@
 /Users/kadir/Desktop/barberapp/obj/Debug/net8.0/staticwebassets/msbuild.buildMultiTargeting.barberapp.props
 /Users/kadir/Desktop/barberapp/obj/Debug/net8.0/staticwebassets/msbuild.buildTransitive.barberapp.props
 /Users/kadir/Desktop/barberapp/obj/Debug/net8.0/staticwebassets.pack.json
-/Users/kadir/Desktop/barberapp/obj/Debug/net8.0/scopedcss/Views/Shared/_Layout.cshtml.rz.scp.css
 /Users/kadir/Desktop/barberapp/obj/Debug/net8.0/scopedcss/bundle/barberapp.styles.css
-/Users/kadir/Desktop/barberapp/obj/Debug/net8.0/scopedcss/projectbundle/barberapp.bundle.scp.css
 /Users/kadir/Desktop/barberapp/obj/Debug/net8.0/barberapp.csproj.Up2Date
 /Users/kadir/Desktop/barberapp/obj/Debug/net8.0/barberapp.dll
 /Users/kadir/Desktop/barberapp/obj/Debug/net8.0/refint/barberapp.dll

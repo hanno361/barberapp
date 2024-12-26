@@ -1,10 +1,6 @@
 {
   "Files": [
     {
-      "Id": "/Users/kadir/Desktop/barberapp/obj/Debug/net8.0/scopedcss/projectbundle/barberapp.bundle.scp.css",
-      "PackagePath": "staticwebassets/barberapp.bundle.scp.css"
-    },
-    {
       "Id": "/Users/kadir/Desktop/barberapp/wwwroot/css/site.css",
       "PackagePath": "staticwebassets/css/site.css"
     },
