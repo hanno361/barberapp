@@ -1,0 +1,72 @@
+@model List<Appointment>
+
+<div class="container">
+    <h2>Admin Paneli - Tüm Randevular</h2>
+    
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Message"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="mb-3">
+        <a href="@Url.Action("Users")" class="btn btn-primary">Kullanıcıları Yönet</a>
+    </div>
+
+    @if (Model.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Müşteri</th>
+                    <th>Berber</th>
+                    <th>Hizmet</th>
+                    <th>Tarih</th>
+                    <th>Durum</th>
+                    <th>İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var appointment in Model)
+                {
+                    <tr>
+                        <td>@appointment.User.FullName</td>
+                        <td>@appointment.Barber</td>
+                        <td>@appointment.Service</td>
+                        <td>@appointment.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <span class="badge @(appointment.Status == "Onaylandı" ? "bg-success" : 
+                                               appointment.Status == "İptal edildi" ? "bg-danger" : 
+                                               "bg-warning")">
+                                @appointment.Status
+                            </span>
+                        </td>
+                        <td>
+                            @if (appointment.Status != "Onaylandı" && appointment.Status != "İptal edildi")
+                            {
+                                <div class="btn-group">
+                                    <form asp-action="UpdateStatus" method="post" style="display: inline;">
+                                        <input type="hidden" name="id" value="@appointment.Id" />
+                                        <input type="hidden" name="status" value="Onaylandı" />
+                                        <button type="submit" class="btn btn-success btn-sm mx-1">Onayla</button>
+                                    </form>
+                                    <form asp-action="UpdateStatus" method="post" style="display: inline;">
+                                        <input type="hidden" name="id" value="@appointment.Id" />
+                                        <input type="hidden" name="status" value="İptal edildi" />
+                                        <button type="submit" class="btn btn-danger btn-sm">İptal Et</button>
+                                    </form>
+                                </div>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Henüz randevu bulunmamaktadır.</p>
+    }
+</div> 

@@ -1,0 +1,44 @@
+.banner-image {
+    margin: 30px auto;
+    max-width: 400px;
+}
+
+.banner-image img {
+    width: 100%;
+    height: auto;
+    transition: transform 0.3s ease;
+    border-radius: 10px;
+}
+
+.banner-image img:hover {
+    transform: scale(1.02);
+}
+
+.content {
+    margin-top: 30px;
+}
+
+h1 {
+    color: #2c3e50;
+    margin-top: 2rem;
+    font-weight: bold;
+}
+
+.lead {
+    color: #34495e;
+    font-size: 1.25rem;
+}
+
+@media (max-width: 768px) {
+    .banner-image {
+        max-width: 300px;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+    }
+
+    .lead {
+        font-size: 1.1rem;
+    }
+} 

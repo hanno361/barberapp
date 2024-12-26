@@ -1,0 +1,36 @@
+@model List<User>
+
+<div class="container">
+    <h2>Admin Paneli - Kullanıcılar</h2>
+    
+    <div class="mb-3">
+        <a href="@Url.Action("Index")" class="btn btn-primary">Randevuları Yönet</a>
+    </div>
+
+    @if (Model.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Ad Soyad</th>
+                    <th>Email</th>
+                    <th>Kayıt Tarihi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td>@user.FullName</td>
+                        <td>@user.Email</td>
+                        <td>@user.Id</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Henüz kullanıcı bulunmamaktadır.</p>
+    }
+</div> 

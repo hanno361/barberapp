@@ -1,0 +1,48 @@
+@model List<Appointment>
+
+<div class="container">
+    <h2>Randevularım</h2>
+    <a href="@Url.Action("Create")" class="btn btn-primary mb-3">Yeni Randevu Al</a>
+
+    @if (Model.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Berber</th>
+                    <th>Hizmet</th>
+                    <th>Tarih</th>
+                    <th>Durum</th>
+                    <th>İşlem</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var appointment in Model)
+                {
+                    <tr>
+                        <td>@appointment.Barber</td>
+                        <td>@appointment.Service</td>
+                        <td>@appointment.Date.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@appointment.Status</td>
+                        <td>
+                            @if (appointment.Status == "Aktif")
+                            {
+                                <form asp-action="Cancel" method="post" style="display: inline;">
+                                    <input type="hidden" name="id" value="@appointment.Id" />
+                                    <button type="submit" class="btn btn-danger btn-sm" 
+                                            onclick="return confirm('Randevuyu iptal etmek istediğinize emin misiniz?')">
+                                        İptal Et
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Henüz randevunuz bulunmamaktadır.</p>
+    }
+</div> 

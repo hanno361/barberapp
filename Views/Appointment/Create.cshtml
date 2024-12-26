@@ -1,0 +1,119 @@
+@{
+    var today = DateTime.Today;
+    var timeSlots = new List<string>();
+    
+    for (var hour = 9; hour < 23; hour++)
+    {
+        for (var minute = 0; minute < 60; minute += 20)
+        {
+            timeSlots.Add($"{hour:00}:{minute:00}");
+        }
+    }
+
+    var barbers = new List<string>
+    {
+        "Prof. Dr. Çağrı",
+        "Neymarın Berberi",
+        "Kadir Alkan",
+        "VİP HİZMET"
+    };
+}
+
+<div class="container">
+    <h2>Yeni Randevu Al</h2>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    <form asp-action="Create" method="post">
+        <div class="form-group mb-3">
+            <label>Berber Seçin:</label>
+            <select name="barber" class="form-control" required>
+                <option value="">Berber Seçin</option>
+                @foreach (var barber in barbers)
+                {
+                    <option value="@barber">@barber</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Hizmet Seçin:</label>
+            <select name="service" class="form-control">
+                <option value="Saç Kesimi">Saç Kesimi</option>
+                <option value="Sakal Tıraşı">Sakal Tıraşı</option>
+                <option value="Saç & Sakal">Saç & Sakal</option>
+            </select>
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Tarih:</label>
+            <input type="date" 
+                   id="appointmentDate"
+                   name="date" 
+                   class="form-control" 
+                   required 
+                   min="@today.ToString("yyyy-MM-dd")" />
+        </div>
+
+        <div class="form-group mb-3">
+            <label>Saat:</label>
+            <select name="time" id="timeSlot" class="form-control" required>
+                <option value="">Saat Seçin</option>
+                @foreach (var time in timeSlots)
+                {
+                    <option value="@time">@time</option>
+                }
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Randevu Al</button>
+        <a href="@Url.Action("Index")" class="btn btn-secondary">İptal</a>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById("appointmentDate").setAttribute('min', today);
+
+            $("#appointmentDate, select[name='barber']").change(function () {
+                var selectedDate = $("#appointmentDate").val();
+                var selectedBarber = $("select[name='barber']").val();
+                var timeSelect = $("#timeSlot");
+
+                if (!selectedDate || !selectedBarber) return;
+
+                var date = new Date(selectedDate);
+                if (date.getDay() === 0) {
+                    alert("Pazar günleri randevu alınamaz!");
+                    $("#appointmentDate").val('');
+                    return;
+                }
+
+                $.post("/Appointment/GetBookedTimes", 
+                    { 
+                        date: selectedDate,
+                        barber: selectedBarber
+                    }, 
+                    function (bookedTimes) {
+                        timeSelect.find("option").each(function () {
+                            var timeValue = $(this).val();
+                            if (bookedTimes.includes(timeValue)) {
+                                $(this).text(timeValue + " (Dolu)");
+                                $(this).prop('disabled', true);
+                            } else {
+                                $(this).text(timeValue);
+                                $(this).prop('disabled', false);
+                            }
+                        });
+                    });
+            });
+        });
+    </script>
+} 

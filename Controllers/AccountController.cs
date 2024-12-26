@@ -28,6 +28,12 @@ namespace barberapp.Controllers
             {
                 HttpContext.Session.SetInt32("UserId", user.Id);
                 HttpContext.Session.SetString("UserName", user.FullName);
+                HttpContext.Session.SetString("UserRole", user.Role);
+
+                if (user.Role == "Admin")
+                {
+                    return RedirectToAction("Index", "Admin");
+                }
                 return RedirectToAction("Index", "Home");
             }
             ViewBag.Error = "Hatalı email veya şifre";

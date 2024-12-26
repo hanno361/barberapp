@@ -1,6 +1,10 @@
 {
   "Files": [
     {
+      "Id": "/Users/kadir/Desktop/barberapp/wwwroot/css/home.css",
+      "PackagePath": "staticwebassets/css/home.css"
+    },
+    {
       "Id": "/Users/kadir/Desktop/barberapp/wwwroot/css/site.css",
       "PackagePath": "staticwebassets/css/site.css"
     },
@@ -9,8 +13,12 @@
       "PackagePath": "staticwebassets/favicon.ico"
     },
     {
-      "Id": "/Users/kadir/Desktop/barberapp/wwwroot/js/site.js",
-      "PackagePath": "staticwebassets/js/site.js"
+      "Id": "/Users/kadir/Desktop/barberapp/wwwroot/images/giga.jpg",
+      "PackagePath": "staticwebassets/images/giga.jpg"
+    },
+    {
+      "Id": "/Users/kadir/Desktop/barberapp/wwwroot/images/looney.gif",
+      "PackagePath": "staticwebassets/images/looney.gif"
     },
     {
       "Id": "/Users/kadir/Desktop/barberapp/wwwroot/lib/bootstrap/LICENSE",

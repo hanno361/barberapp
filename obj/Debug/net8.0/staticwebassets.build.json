@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "cmxLJWA7X4YXmPLpCToqDcDVP5RpeiYFknxiNu+5HGs=",
+  "Hash": "b738vKytNVWwBEqOoe5TUmAjCoMAWTwOrOi72wmPDbc=",
   "Source": "barberapp",
   "BasePath": "_content/barberapp",
   "Mode": "Default",
@@ -1157,6 +1157,25 @@
       "OriginalItemSpec": "/Users/kadir/.nuget/packages/microsoft.aspnetcore.identity.ui/8.0.0/staticwebassets/V5/lib/jquery/LICENSE.txt"
     },
     {
+      "Identity": "/Users/kadir/Desktop/barberapp/wwwroot/css/home.css",
+      "SourceId": "barberapp",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/kadir/Desktop/barberapp/wwwroot/",
+      "BasePath": "_content/barberapp",
+      "RelativePath": "css/home.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/css/home.css"
+    },
+    {
       "Identity": "/Users/kadir/Desktop/barberapp/wwwroot/css/site.css",
       "SourceId": "barberapp",
       "SourceType": "Discovered",
@@ -1195,12 +1214,12 @@
       "OriginalItemSpec": "wwwroot/favicon.ico"
     },
     {
-      "Identity": "/Users/kadir/Desktop/barberapp/wwwroot/js/site.js",
+      "Identity": "/Users/kadir/Desktop/barberapp/wwwroot/images/giga.jpg",
       "SourceId": "barberapp",
       "SourceType": "Discovered",
       "ContentRoot": "/Users/kadir/Desktop/barberapp/wwwroot/",
       "BasePath": "_content/barberapp",
-      "RelativePath": "js/site.js",
+      "RelativePath": "images/giga.jpg",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Primary",
@@ -1211,7 +1230,26 @@
       "AssetTraitValue": "",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/js/site.js"
+      "OriginalItemSpec": "wwwroot/images/giga.jpg"
+    },
+    {
+      "Identity": "/Users/kadir/Desktop/barberapp/wwwroot/images/looney.gif",
+      "SourceId": "barberapp",
+      "SourceType": "Discovered",
+      "ContentRoot": "/Users/kadir/Desktop/barberapp/wwwroot/",
+      "BasePath": "_content/barberapp",
+      "RelativePath": "images/looney.gif",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/images/looney.gif"
     },
     {
       "Identity": "/Users/kadir/Desktop/barberapp/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.css",
