@@ -32,7 +32,7 @@
                 @foreach (var appointment in Model)
                 {
                     <tr>
-                        <td>@appointment.User.FullName</td>
+                        <td>@(appointment.User?.FullName ?? "Kullanıcı Silinmiş")</td>
                         <td>@appointment.Barber</td>
                         <td>@appointment.Service</td>
                         <td>@appointment.Date.ToString("dd/MM/yyyy HH:mm")</td>

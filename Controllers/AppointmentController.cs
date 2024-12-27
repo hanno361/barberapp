@@ -64,39 +64,25 @@ namespace barberapp.Controllers
         public async Task<IActionResult> Create(string service, string date, string time, string barber)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null) return RedirectToAction("Login", "Account");
-
-            var dateStr = $"{date} {time}";
-            var appointmentDate = DateTime.Parse(dateStr);
-
-            if (appointmentDate.DayOfWeek == DayOfWeek.Sunday)
+            if (!userId.HasValue)
             {
-                TempData["Error"] = "Pazar günleri randevu alınamaz.";
-                return RedirectToAction(nameof(Create));
+                return RedirectToAction("Login", "Account");
             }
 
-            var isTimeSlotTaken = await _context.Appointments
-                .AnyAsync(a => a.Date == appointmentDate && 
-                              a.Status == "Aktif" && 
-                              a.Barber == barber);
-
-            if (isTimeSlotTaken)
-            {
-                TempData["Error"] = "Bu berber için seçilen saat dolu.";
-                return RedirectToAction(nameof(Create));
-            }
-
+            var appointmentDate = DateTime.Parse($"{date} {time}");
+            
             var appointment = new Appointment
             {
-                UserId = userId.Value,
                 Service = service,
                 Date = appointmentDate,
                 Status = "Aktif",
-                Barber = barber
+                Barber = barber,
+                UserId = userId.Value
             };
 
             _context.Appointments.Add(appointment);
             await _context.SaveChangesAsync();
+            
             return RedirectToAction(nameof(Index));
         }
 

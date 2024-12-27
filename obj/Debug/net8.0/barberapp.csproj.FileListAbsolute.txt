@@ -31,11 +31,15 @@
 /Users/kadir/Desktop/barberapp/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.dll
 /Users/kadir/Desktop/barberapp/bin/Debug/net8.0/Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 /Users/kadir/Desktop/barberapp/bin/Debug/net8.0/Microsoft.IdentityModel.Tokens.dll
+/Users/kadir/Desktop/barberapp/bin/Debug/net8.0/Microsoft.OpenApi.dll
 /Users/kadir/Desktop/barberapp/bin/Debug/net8.0/Microsoft.SqlServer.Server.dll
 /Users/kadir/Desktop/barberapp/bin/Debug/net8.0/Microsoft.Win32.SystemEvents.dll
 /Users/kadir/Desktop/barberapp/bin/Debug/net8.0/Mono.TextTemplating.dll
 /Users/kadir/Desktop/barberapp/bin/Debug/net8.0/Npgsql.dll
 /Users/kadir/Desktop/barberapp/bin/Debug/net8.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll
+/Users/kadir/Desktop/barberapp/bin/Debug/net8.0/Swashbuckle.AspNetCore.Swagger.dll
+/Users/kadir/Desktop/barberapp/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/Users/kadir/Desktop/barberapp/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
 /Users/kadir/Desktop/barberapp/bin/Debug/net8.0/System.CodeDom.dll
 /Users/kadir/Desktop/barberapp/bin/Debug/net8.0/System.Composition.AttributedModel.dll
 /Users/kadir/Desktop/barberapp/bin/Debug/net8.0/System.Composition.Convention.dll

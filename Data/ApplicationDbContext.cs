@@ -10,14 +10,18 @@ namespace barberapp.Data
         {
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Appointment>()
-                .Property(b => b.Date)
-                .HasColumnType("timestamp without time zone");
-        }
-
         public DbSet<User> Users { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // User ve Appointment arasındaki ilişki
+            modelBuilder.Entity<Appointment>()
+                .HasOne(a => a.User)
+                .WithMany()
+                .HasForeignKey(a => a.UserId);
+        }
     }
 } 

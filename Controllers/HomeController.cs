@@ -9,5 +9,10 @@ namespace barberapp.Controllers
         {
             return View();
         }
+
+        public IActionResult Error()
+        {
+            return View();
+        }
     }
 }
