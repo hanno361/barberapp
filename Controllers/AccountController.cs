@@ -17,6 +17,10 @@ namespace barberapp.Controllers
 
         public IActionResult Login()
         {
+            if (HttpContext.Session.GetInt32("UserId").HasValue)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
@@ -42,6 +46,10 @@ namespace barberapp.Controllers
 
         public IActionResult Signup()
         {
+            if (HttpContext.Session.GetInt32("UserId").HasValue)
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
