@@ -62,15 +62,27 @@ namespace Api.Controllers
         [HttpPut("updatestatus/{id}")]
         public async Task<IActionResult> UpdateAppointmentStatus(int id, [FromBody] string status)
         {
-            var appointment = await _context.Appointments.FindAsync(id);
-            if (appointment == null)
+            try 
             {
-                return NotFound();
-            }
+                var appointment = await _context.Appointments.FindAsync(id);
+                if (appointment == null)
+                {
+                    return NotFound($"ID: {id} olan randevu bulunamadı.");
+                }
 
-            appointment.Status = status;
-            await _context.SaveChangesAsync();
-            return Ok(new { message = $"Randevu durumu '{status}' olarak güncellendi." });
+                appointment.Status = status;
+                await _context.SaveChangesAsync();
+
+                // Debug bilgisi
+                Console.WriteLine($"Randevu güncellendi - ID: {id}, Yeni Durum: {status}");
+
+                return Ok(new { message = $"Randevu durumu '{status}' olarak güncellendi." });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Hata oluştu: {ex.Message}");
+                return StatusCode(500, new { message = "Randevu güncellenirken bir hata oluştu.", error = ex.Message });
+            }
         }
 
         // Berbere göre randevuları filtrele ve tarihe göre sırala
@@ -84,7 +96,6 @@ namespace Api.Controllers
                 .Include(a => a.User)
                 .AsQueryable();
 
-            // LINQ ile filtreleme
             if (!string.IsNullOrEmpty(barber))
             {
                 query = query.Where(a => a.Barber == barber);
@@ -97,11 +108,22 @@ namespace Api.Controllers
 
             if (startDate.HasValue)
             {
-                query = query.Where(a => a.Date.Date >= startDate.Value.Date);
+                // Tarih karşılaştırması için başlangıç ve bitiş zamanları
+                var startOfDay = startDate.Value.Date;
+                var endOfDay = startDate.Value.Date.AddDays(1).AddTicks(-1);
+
+                query = query.Where(a => a.Date >= startOfDay && a.Date <= endOfDay);
             }
 
-            // Tarihe göre sıralama
-            return await query.OrderByDescending(a => a.Date).ToListAsync();
+            var appointments = await query
+                .OrderByDescending(a => a.Date)
+                .ToListAsync();
+
+            // Debug bilgisi
+            Console.WriteLine($"Arama kriterleri - Berber: {barber}, Status: {status}, Tarih: {startDate}");
+            Console.WriteLine($"Bulunan randevu sayısı: {appointments.Count}");
+
+            return appointments;
         }
 
         // Kullanıcı arama

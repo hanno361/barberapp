@@ -7,7 +7,7 @@
     <div class="card mb-4">
         <div class="card-body">
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <select id="berberFilter" class="form-select">
                         <option value="">Tüm Berberler</option>
                         <option value="Prof. Dr. Çağrı">Prof. Dr. Çağrı</option>
@@ -16,7 +16,7 @@
                         <option value="VİP HİZMET">VİP HİZMET</option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <select id="statusFilter" class="form-select">
                         <option value="">Tüm Durumlar</option>
                         <option value="Aktif">Aktif</option>
@@ -24,12 +24,27 @@
                         <option value="İptal edildi">İptal edildi</option>
                     </select>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <input type="date" id="startDate" class="form-control" />
                 </div>
-                <div class="col-md-3">
-                    <button onclick="searchAppointments()" class="btn btn-primary">Ara</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kullanıcı Arama Bölümü -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">Kullanıcı Arama</h5>
+            <div class="row">
+                <div class="col-md-6">
+                    <input type="text" 
+                           id="userSearchInput" 
+                           class="form-control" 
+                           placeholder="Kullanıcı adı veya email ile ara...">
                 </div>
+            </div>
+            <div id="userList" class="mt-3">
+                <!-- Kullanıcı listesi buraya gelecek -->
             </div>
         </div>
     </div>
@@ -45,17 +60,12 @@
         // Sayfa yüklendiğinde çalışacak kod
         $(document).ready(function() {
             // Otomatik olarak tüm randevuları getir
-            fetch('/api/AppointmentApi/search')
-                .then(response => response.json())
-                .then(appointments => {
-                    const table = document.getElementById('appointmentsTable');
-                    table.innerHTML = generateTableHTML(appointments);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    const table = document.getElementById('appointmentsTable');
-                    table.innerHTML = '<div class="alert alert-danger">Randevular yüklenirken bir hata oluştu.</div>';
-                });
+            searchAppointments();
+            
+            // Filtreleme seçeneklerine change event listener ekle
+            $('#berberFilter, #statusFilter, #startDate').on('change', function() {
+                searchAppointments();
+            });
         });
 
         function searchAppointments() {
@@ -63,39 +73,59 @@
             const status = document.getElementById('statusFilter').value;
             const startDate = document.getElementById('startDate').value;
 
+            // Debug için
+            console.log('Seçilen berber:', berber);
+
             let url = '/api/AppointmentApi/search';
             const params = new URLSearchParams();
             
-            if (berber) params.append('berber', berber);
-            if (status) params.append('status', status);
-            if (startDate) params.append('startDate', startDate);
-
-            const queryString = params.toString();
-            if (queryString) {
-                url += '?' + queryString;
+            // "berber" yerine "barber" kullanıyoruz - backend ile eşleşmesi için
+            if (berber && berber !== "") {
+                params.append('barber', berber); // 'berber' yerine 'barber' kullanıldı
+            }
+            
+            if (status && status !== "") {
+                params.append('status', status);
+            }
+            
+            if (startDate) {
+                params.append('startDate', startDate);
             }
 
-            // Yükleniyor göstergesi ekle
-            const table = document.getElementById('appointmentsTable');
-            table.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"></div></div>';
+            const queryString = params.toString();
+            const finalUrl = queryString ? `${url}?${queryString}` : url;
+            
+            // Debug için URL'i kontrol et
+            console.log('API çağrısı URL:', finalUrl);
 
-            fetch(url)
-                .then(response => response.json())
+            fetch(finalUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(appointments => {
+                    console.log('Gelen randevular:', appointments); // Debug için
+                    const table = document.getElementById('appointmentsTable');
+                    
+                    if (appointments.length === 0) {
+                        table.innerHTML = '<div class="alert alert-info">Seçilen kriterlere uygun randevu bulunamadı.</div>';
+                        return;
+                    }
+
                     table.innerHTML = generateTableHTML(appointments);
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    const table = document.getElementById('appointmentsTable');
                     table.innerHTML = '<div class="alert alert-danger">Randevular yüklenirken bir hata oluştu.</div>';
                 });
         }
 
+        // Tablo HTML'ini oluşturan fonksiyon
         function generateTableHTML(appointments) {
-            if (appointments.length === 0) {
-                return '<p>Sonuç bulunamadı.</p>';
-            }
-
-            let html = `
+            return `
                 <table class="table">
                     <thead>
                         <tr>
@@ -104,89 +134,140 @@
                             <th>Hizmet</th>
                             <th>Tarih</th>
                             <th>Durum</th>
-                            <th>İşlem</th>
+                            <th>İşlemler</th>
                         </tr>
                     </thead>
-                    <tbody>`;
-
-            appointments.forEach(app => {
-                html += `
-                    <tr data-appointment-id="${app.id}">
-                        <td>${app.user ? app.user.fullName : 'Kullanıcı Silinmiş'}</td>
-                        <td>${app.barber}</td>
-                        <td>${app.service}</td>
-                        <td>${new Date(app.date).toLocaleString('tr-TR')}</td>
-                        <td>
-                            <span class="status-badge badge ${app.status === 'Onaylandı' ? 'bg-success' : 
-                                           app.status === 'İptal edildi' ? 'bg-danger' : 
-                                           'bg-warning'}">
-                                ${app.status}
-                            </span>
-                        </td>
-                        <td class="action-buttons">
-                            ${app.status !== 'İptal edildi' ? `
-                                <div class="btn-group">
-                                    ${app.status !== 'Onaylandı' ? `
-                                        <button onclick="updateStatus(${app.id}, 'Onaylandı')" 
-                                                class="btn btn-success btn-sm mx-1">Onayla</button>
+                    <tbody>
+                        ${appointments.map(app => `
+                            <tr data-appointment-id="${app.id}">
+                                <td>${app.user ? app.user.fullName : 'Bilinmiyor'}</td>
+                                <td>${app.barber}</td>
+                                <td>${app.service}</td>
+                                <td>${new Date(app.date).toLocaleString('tr-TR')}</td>
+                                <td>
+                                    <span class="badge ${app.status === 'Onaylandı' ? 'bg-success' : 
+                                              app.status === 'İptal edildi' ? 'bg-danger' : 
+                                              'bg-warning'}">${app.status}</span>
+                                </td>
+                                <td class="action-buttons">
+                                    ${app.status !== 'İptal edildi' ? `
+                                        <div class="btn-group">
+                                            ${app.status !== 'Onaylandı' ? 
+                                                `<button onclick="updateStatus(${app.id}, 'Onaylandı')" 
+                                                        class="btn btn-success btn-sm">Onayla</button>` : ''}
+                                            <button onclick="updateStatus(${app.id}, 'İptal edildi')" 
+                                                    class="btn btn-danger btn-sm">İptal Et</button>
+                                        </div>
                                     ` : ''}
-                                    <button onclick="updateStatus(${app.id}, 'İptal edildi')" 
-                                            class="btn btn-danger btn-sm">İptal Et</button>
-                                </div>
-                            ` : ''}
-                        </td>
-                    </tr>`;
-            });
-
-            html += `</tbody></table>`;
-            return html;
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
         }
 
-        function updateStatus(id, status) {
-            if (status === 'İptal edildi') {
-                if (!confirm('Bu randevuyu iptal etmek istediğinize emin misiniz?')) {
-                    return;
-                }
-            }
+        function updateStatus(appointmentId, newStatus) {
+            // Debug için
+            console.log('Güncelleniyor:', { appointmentId, newStatus });
 
-            fetch(`/api/AppointmentApi/updatestatus/${id}`, {
+            fetch(`/api/AppointmentApi/updatestatus/${appointmentId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(status)
+                body: JSON.stringify(newStatus)
             })
-            .then(response => response.json())
-            .then(data => {
-                // Başarılı güncelleme mesajı
-                alert(data.message);
-                
-                // Sadece ilgili randevunun görünümünü güncelle
-                const row = document.querySelector(`tr[data-appointment-id="${id}"]`);
-                const statusCell = row.querySelector('.status-badge');
-                const actionCell = row.querySelector('.action-buttons');
-                
-                // Status badge'ini güncelle
-                statusCell.className = `badge ${status === 'Onaylandı' ? 'bg-success' : 
-                                         status === 'İptal edildi' ? 'bg-danger' : 
-                                         'bg-warning'}`;
-                statusCell.textContent = status;
-                
-                // İşlem butonlarını güncelle
-                if (status === 'İptal edildi') {
-                    actionCell.innerHTML = '';
-                } else if (status === 'Onaylandı') {
-                    actionCell.innerHTML = `
-                        <div class="btn-group">
-                            <button onclick="updateStatus(${id}, 'İptal edildi')" 
-                                    class="btn btn-danger btn-sm">İptal Et</button>
-                        </div>`;
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
+                return response.json();
+            })
+            .then(result => {
+                console.log('Başarılı:', result);
+                // Tabloyu yenile
+                searchAppointments();
             })
             .catch(error => {
-                console.error('Error:', error);
-                alert('Güncelleme sırasında bir hata oluştu.');
+                console.error('Hata:', error);
+                alert('Randevu durumu güncellenirken bir hata oluştu.');
             });
         }
+
+        // Kullanıcı arama fonksiyonu
+        function searchUsers(searchTerm) {
+            const url = `/api/AppointmentApi/searchusers${searchTerm ? `?searchTerm=${searchTerm}` : ''}`;
+            
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(users => {
+                    if (Array.isArray(users)) {
+                        displayUsers(users);
+                    } else {
+                        console.error('Unexpected response format:', users);
+                    }
+                })
+                .catch(error => {
+                    console.error('Search Users Error:', error);
+                    // Hata alert'ini kaldırıyoruz çünkü her aramada gösterilmesi rahatsız edici olabilir
+                    // Bunun yerine hatayı sadece console'a yazıyoruz
+                });
+        }
+
+        // Kullanıcıları görüntüleme fonksiyonu
+        function displayUsers(users) {
+            const userList = document.getElementById('userList');
+            
+            if (users.length === 0) {
+                userList.innerHTML = '<p>Kullanıcı bulunamadı.</p>';
+                return;
+            }
+
+            let html = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Ad Soyad</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+            users.forEach(user => {
+                html += `
+                    <tr>
+                        <td>${user.fullName}</td>
+                        <td>${user.email}</td>
+                    </tr>`;
+            });
+
+            html += `</tbody></table>`;
+            userList.innerHTML = html;
+        }
+
+        // Kullanıcı arama input'u için event listener - debounce eklenmiş hali
+        let searchTimeout;
+        document.getElementById('userSearchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value;
+            
+            // Önceki timeout'u temizle
+            clearTimeout(searchTimeout);
+            
+            // Yeni bir timeout başlat
+            searchTimeout = setTimeout(() => {
+                searchUsers(searchTerm);
+            }, 300); // 300ms bekle
+        });
+
+        // Sayfa yüklendiğinde ilk 10 kullanıcıyı getir
+        document.addEventListener('DOMContentLoaded', function() {
+            searchUsers('');
+        });
     </script>
 } 
