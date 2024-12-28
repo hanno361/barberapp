@@ -13,7 +13,14 @@
                         <!-- Opsiyonel Görsel Yükleme -->
                         <div class="mb-4">
                             <label for="imageUpload" class="form-label">Referans Görsel</label>
-                            <input type="file" class="form-control" id="imageUpload" accept="image/*">
+                            <div class="d-flex gap-2 mb-2">
+                                <input type="file" class="form-control" id="imageUpload" accept="image/*">
+                                <button type="button" class="btn btn-secondary" id="openCamera">Kamera Aç</button>
+                            </div>
+                            <div id="cameraContainer" style="display: none;" class="text-center mb-2">
+                                <video id="cameraView" style="max-width: 100%; max-height: 300px;" autoplay playsinline></video>
+                                <button type="button" class="btn btn-primary mt-2" id="capturePhoto">Fotoğraf Çek</button>
+                            </div>
                             <div id="imagePreview" class="mt-2"></div>
                         </div>
                         
@@ -119,7 +126,7 @@
         const options = {
             method: 'POST',
             headers: {
-                'x-rapidapi-key': '2efdcd7987mshc76755e24485269p143971jsnca3f0e3cb75d',
+                'x-rapidapi-key': 'd8eb069991msh659b8106dfb2f43p123ba5jsneed4b1c515c1',
                 'x-rapidapi-host': 'hairstyle-changer-pro.p.rapidapi.com',
             },
             body: formData
@@ -204,5 +211,71 @@
             reader.readAsDataURL(file);
         }
     });
+
+    // Kamera ile ilgili değişkenler
+    const openCameraBtn = document.getElementById('openCamera');
+    const cameraContainer = document.getElementById('cameraContainer');
+    const cameraView = document.getElementById('cameraView');
+    const capturePhotoBtn = document.getElementById('capturePhoto');
+    let stream = null;
+
+    // Kamera aç butonu için event listener
+    openCameraBtn.addEventListener('click', async () => {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    facingMode: 'user',
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                } 
+            });
+            cameraView.srcObject = stream;
+            cameraContainer.style.display = 'block';
+        } catch (err) {
+            console.error('Kamera erişimi hatası:', err);
+            alert('Kamera erişimi sağlanamadı. Lütfen kamera izinlerini kontrol edin.');
+        }
+    });
+
+    // Fotoğraf çekme butonu için event listener
+    capturePhotoBtn.addEventListener('click', () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = cameraView.videoWidth;
+        canvas.height = cameraView.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(cameraView, 0, 0);
+        
+        // Fotoğrafı base64 formatına çevir
+        const imageDataUrl = canvas.toDataURL('image/jpeg');
+        
+        // Fotoğrafı blob'a çevir ve input'a ekle
+        fetch(imageDataUrl)
+            .then(res => res.blob())
+            .then(blob => {
+                const file = new File([blob], "camera-photo.jpg", { type: "image/jpeg" });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                imageUpload.files = dataTransfer.files;
+                
+                // Önizleme göster
+                const imagePreview = document.getElementById('imagePreview');
+                imagePreview.innerHTML = `<img src="${imageDataUrl}" class="img-fluid rounded" style="max-height: 300px; object-fit: contain;" alt="Çekilen fotoğraf">`;
+                
+                // Kamerayı kapat
+                stopCamera();
+            });
+    });
+
+    // Kamerayı kapatma fonksiyonu
+    function stopCamera() {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            cameraView.srcObject = null;
+            cameraContainer.style.display = 'none';
+        }
+    }
+
+    // Sayfa kapanırken kamerayı kapat
+    window.addEventListener('beforeunload', stopCamera);
 </script>
 
