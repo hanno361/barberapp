@@ -9,7 +9,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-body">
-                    <form id="hairStyleForm" class="mb-4">
+                    <form id="hairStyleForm" class="mb-4" method="post" enctype="multipart/form-data" onsubmit="submitForm(event)">
                         <!-- Opsiyonel Görsel Yükleme -->
                         <div class="mb-4">
                             <label for="imageUpload" class="form-label">Referans Görsel</label>
@@ -17,14 +17,14 @@
                             <div id="imagePreview" class="mt-2"></div>
                         </div>
                         
-                        <!-- Grup 1 (Required) -->
+                        <!-- Saç Stili Seçimi -->
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h5 class="card-title">Birinci Tercih</h5>
+                                <h5 class="card-title">Saç Stili Seçimi</h5>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
-                                        <label for="param1" class="form-label">Saç Modeli</label>
-                                        <select class="form-select" id="param1" required>
+                                        <label for="hairStyle" class="form-label">Saç Modeli</label>
+                                        <select class="form-select" id="hairStyle" required>
                                             <option value="">Seçiniz</option>
                                             <option value="BuzzCut">BuzzCut: Kısa Tıraş</option>
                                             <option value="UnderCut">UnderCut: Alt Kesim</option>
@@ -39,180 +39,30 @@
                                             <option value="ManBun">ManBun: Topuz (Erkek)</option>
                                             <option value="Afro">Afro: Afro Saç</option>
                                             <option value="LowFade">LowFade: Düşük Fade</option>
-                                            <option value="UndercutLongHair">UndercutLongHair: Uzun Saçla Alt Kesim</option>
-                                            <option value="TwoBlockHaircut">TwoBlockHaircut: İki Blok Kesim</option>
                                             <option value="TexturedFringe">TexturedFringe: Dokulu Kahkül</option>
-                                            <option value="BluntBowlCut">BluntBowlCut: Küt Kase Kesimi</option>
-                                            <option value="LongWavyCurtainBangs">LongWavyCurtainBangs: Uzun Dalgalı Perde Kahkülü</option>
                                             <option value="MessyTousled">MessyTousled: Dağınık Karışık Saç</option>
-                                            <option value="MediumLengthWavy">MediumLengthWavy: Orta Boy Dalgalı Saç</option>
-                                            <option value="CornrowBraids">CornrowBraids: Mısır Sırası Örgüsü</option>
-                                            <option value="LongHairTiedUp">LongHairTiedUp: Bağlı Uzun Saç</option>
-                                            <option value="MiddleParted">Middle-parted: Ortadan Ayrılmış Saç</option>
                                         </select>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label for="param2" class="form-label">Saç Rengi</label>
-                                        <select class="form-select" id="param2" required>
-                                            <option value="original" selected>Orijinal Renk</option>
+                                        <label for="hairColor" class="form-label">Saç Rengi</label>
+                                        <select class="form-select" id="hairColor" required>
+                                            <option value="rapid_do_not_include_in_request_key" selected>Orijinal Renk</option>
                                             <option value="blonde">Sarı Saç</option>
-                                            <option value="platinumBlonde">Platin Sarısı Saç</option>
                                             <option value="brown">Kahverengi Saç</option>
-                                            <option value="lightBrown">Açık Kahverengi Saç</option>
-                                            <option value="blue">Mavi Saç</option>
-                                            <option value="lightBlue">Açık Mavi Saç</option>
-                                            <option value="purple">Mor Saç</option>
-                                            <option value="lightPurple">Açık Mor Saç</option>
-                                            <option value="pink">Pembe Saç</option>
                                             <option value="black">Siyah Saç</option>
-                                            <option value="white">Beyaz Saç</option>
-                                            <option value="grey">Gri Saç</option>
-                                            <option value="silver">Gümüş Saç</option>
                                             <option value="red">Kırmızı Saç</option>
-                                            <option value="orange">Turuncu Saç</option>
-                                            <option value="green">Yeşil Saç</option>
-                                            <option value="gradient">Degrade Saç</option>
-                                            <option value="multicolored">Çok Renkli Saç</option>
-                                            <option value="darkBlue">Koyu Mavi Saç</option>
-                                            <option value="burgundy">Bordo Saç</option>
-                                            <option value="darkGreen">Koyu Yeşil Saç</option>
+                                            <option value="blue">Mavi Saç</option>
+                                            <option value="purple">Mor Saç</option>
+                                            <option value="pink">Pembe Saç</option>
+                                            <option value="grey">Gri Saç</option>
+                                            <option value="white">Beyaz Saç</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Grup 2 (Opsiyonel) -->
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h5 class="card-title">İkinci Tercih (Opsiyonel)</h5>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="param3" class="form-label">Saç Modeli</label>
-                                        <select class="form-select" id="param3">
-                                            <option value="">Seçiniz</option>
-                                            <option value="BuzzCut">BuzzCut: Kısa Tıraş</option>
-                                            <option value="UnderCut">UnderCut: Alt Kesim</option>
-                                            <option value="Pompadour">Pompadour: Kabartılmış Saç</option>
-                                            <option value="SlickBack">SlickBack: Geriye Taralı Saç</option>
-                                            <option value="CurlyShag">CurlyShag: Kıvırcık Dağınık Saç</option>
-                                            <option value="WavyShag">WavyShag: Dalgalı Dağınık Saç</option>
-                                            <option value="FauxHawk">FauxHawk: Sahte Mohikan</option>
-                                            <option value="Spiky">Spiky: Dikenli Saç</option>
-                                            <option value="CombOver">CombOver: Yana Taranmış Saç</option>
-                                            <option value="HighTightFade">HighTightFade: Yüksek ve Sıkı Fade</option>
-                                            <option value="ManBun">ManBun: Topuz (Erkek)</option>
-                                            <option value="Afro">Afro: Afro Saç</option>
-                                            <option value="LowFade">LowFade: Düşük Fade</option>
-                                            <option value="UndercutLongHair">UndercutLongHair: Uzun Saçla Alt Kesim</option>
-                                            <option value="TwoBlockHaircut">TwoBlockHaircut: İki Blok Kesim</option>
-                                            <option value="TexturedFringe">TexturedFringe: Dokulu Kahkül</option>
-                                            <option value="BluntBowlCut">BluntBowlCut: Küt Kase Kesimi</option>
-                                            <option value="LongWavyCurtainBangs">LongWavyCurtainBangs: Uzun Dalgalı Perde Kahkülü</option>
-                                            <option value="MessyTousled">MessyTousled: Dağınık Karışık Saç</option>
-                                            <option value="MediumLengthWavy">MediumLengthWavy: Orta Boy Dalgalı Saç</option>
-                                            <option value="CornrowBraids">CornrowBraids: Mısır Sırası Örgüsü</option>
-                                            <option value="LongHairTiedUp">LongHairTiedUp: Bağlı Uzun Saç</option>
-                                            <option value="MiddleParted">Middle-parted: Ortadan Ayrılmış Saç</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="param4" class="form-label">Saç Rengi</label>
-                                        <select class="form-select" id="param4">
-                                            <option value="original" selected>Orijinal Renk</option>
-                                            <option value="blonde">Sarı Saç</option>
-                                            <option value="platinumBlonde">Platin Sarısı Saç</option>
-                                            <option value="brown">Kahverengi Saç</option>
-                                            <option value="lightBrown">Açık Kahverengi Saç</option>
-                                            <option value="blue">Mavi Saç</option>
-                                            <option value="lightBlue">Açık Mavi Saç</option>
-                                            <option value="purple">Mor Saç</option>
-                                            <option value="lightPurple">Açık Mor Saç</option>
-                                            <option value="pink">Pembe Saç</option>
-                                            <option value="black">Siyah Saç</option>
-                                            <option value="white">Beyaz Saç</option>
-                                            <option value="grey">Gri Saç</option>
-                                            <option value="silver">Gümüş Saç</option>
-                                            <option value="red">Kırmızı Saç</option>
-                                            <option value="orange">Turuncu Saç</option>
-                                            <option value="green">Yeşil Saç</option>
-                                            <option value="gradient">Degrade Saç</option>
-                                            <option value="multicolored">Çok Renkli Saç</option>
-                                            <option value="darkBlue">Koyu Mavi Saç</option>
-                                            <option value="burgundy">Bordo Saç</option>
-                                            <option value="darkGreen">Koyu Yeşil Saç</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Grup 3 (Opsiyonel) -->
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <h5 class="card-title">Üçüncü Tercih (Opsiyonel)</h5>
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="param5" class="form-label">Saç Modeli</label>
-                                        <select class="form-select" id="param5">
-                                            <option value="">Seçiniz</option>
-                                            <option value="BuzzCut">BuzzCut: Kısa Tıraş</option>
-                                            <option value="UnderCut">UnderCut: Alt Kesim</option>
-                                            <option value="Pompadour">Pompadour: Kabartılmış Saç</option>
-                                            <option value="SlickBack">SlickBack: Geriye Taralı Saç</option>
-                                            <option value="CurlyShag">CurlyShag: Kıvırcık Dağınık Saç</option>
-                                            <option value="WavyShag">WavyShag: Dalgalı Dağınık Saç</option>
-                                            <option value="FauxHawk">FauxHawk: Sahte Mohikan</option>
-                                            <option value="Spiky">Spiky: Dikenli Saç</option>
-                                            <option value="CombOver">CombOver: Yana Taranmış Saç</option>
-                                            <option value="HighTightFade">HighTightFade: Yüksek ve Sıkı Fade</option>
-                                            <option value="ManBun">ManBun: Topuz (Erkek)</option>
-                                            <option value="Afro">Afro: Afro Saç</option>
-                                            <option value="LowFade">LowFade: Düşük Fade</option>
-                                            <option value="UndercutLongHair">UndercutLongHair: Uzun Saçla Alt Kesim</option>
-                                            <option value="TwoBlockHaircut">TwoBlockHaircut: İki Blok Kesim</option>
-                                            <option value="TexturedFringe">TexturedFringe: Dokulu Kahkül</option>
-                                            <option value="BluntBowlCut">BluntBowlCut: Küt Kase Kesimi</option>
-                                            <option value="LongWavyCurtainBangs">LongWavyCurtainBangs: Uzun Dalgalı Perde Kahkülü</option>
-                                            <option value="MessyTousled">MessyTousled: Dağınık Karışık Saç</option>
-                                            <option value="MediumLengthWavy">MediumLengthWavy: Orta Boy Dalgalı Saç</option>
-                                            <option value="CornrowBraids">CornrowBraids: Mısır Sırası Örgüsü</option>
-                                            <option value="LongHairTiedUp">LongHairTiedUp: Bağlı Uzun Saç</option>
-                                            <option value="MiddleParted">Middle-parted: Ortadan Ayrılmış Saç</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="param6" class="form-label">Saç Rengi</label>
-                                        <select class="form-select" id="param6">
-                                            <option value="original" selected>Orijinal Renk</option>
-                                            <option value="blonde">Sarı Saç</option>
-                                            <option value="platinumBlonde">Platin Sarısı Saç</option>
-                                            <option value="brown">Kahverengi Saç</option>
-                                            <option value="lightBrown">Açık Kahverengi Saç</option>
-                                            <option value="blue">Mavi Saç</option>
-                                            <option value="lightBlue">Açık Mavi Saç</option>
-                                            <option value="purple">Mor Saç</option>
-                                            <option value="lightPurple">Açık Mor Saç</option>
-                                            <option value="pink">Pembe Saç</option>
-                                            <option value="black">Siyah Saç</option>
-                                            <option value="white">Beyaz Saç</option>
-                                            <option value="grey">Gri Saç</option>
-                                            <option value="silver">Gümüş Saç</option>
-                                            <option value="red">Kırmızı Saç</option>
-                                            <option value="orange">Turuncu Saç</option>
-                                            <option value="green">Yeşil Saç</option>
-                                            <option value="gradient">Degrade Saç</option>
-                                            <option value="multicolored">Çok Renkli Saç</option>
-                                            <option value="darkBlue">Koyu Mavi Saç</option>
-                                            <option value="burgundy">Bordo Saç</option>
-                                            <option value="darkGreen">Koyu Yeşil Saç</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100">Stil Önerisi Al</button>
+                        <button id="submitButton" class="btn btn-primary w-100">Stil Önerisi Al</button>
                     </form>
 
                     <div id="loadingIndicator" style="display: none;" class="text-center">
@@ -223,12 +73,12 @@
                     </div>
 
                     <div id="results" style="display: none;">
-                        <h3 class="mb-3">Önerilen Stiller</h3>
+                        <h3 class="mb-3">Önerilen Stil</h3>
                         <div class="row" id="suggestedStyles">
                             <!-- API sonuçları buraya gelecek -->
                         </div>
                         <div class="mt-4">
-                            <h4>Öneriler</h4>
+                            <h4>Öneri</h4>
                             <p id="suggestionText"></p>
                         </div>
                     </div>
@@ -237,103 +87,122 @@
         </div>
     </div>
 </div>
+<script>
+    const hairStyleForm = document.getElementById('hairStyleForm');
+    const imageUpload = document.getElementById('imageUpload');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const results = document.getElementById('results');
+    const suggestedStyles = document.getElementById('suggestedStyles');
+    const suggestionText = document.getElementById('suggestionText');
 
-@section Scripts {
-    <script>
-        // Renk seçimini devre dışı bırak ve kontrol et
-        function setupColorSelect(modelId, colorId) {
-            const modelSelect = document.getElementById(modelId);
-            const colorSelect = document.getElementById(colorId);
-            
-            // Başlangıçta renk seçimini devre dışı bırak
-            colorSelect.disabled = !modelSelect.value;
-            
-            // Model seçimi değiştiğinde
-            modelSelect.addEventListener('change', function() {
-                if (this.value === '') {
-                    colorSelect.disabled = true;
-                    colorSelect.value = 'original'; // Model seçimi kaldırılınca rengi sıfırla
-                } else {
-                    colorSelect.disabled = false;
-                }
-            });
+    function submitForm(event) {
+        event.preventDefault();
+        const formData = new FormData();
+        formData.append('task_type', 'async');
+
+        // Dosya yükleme kontrolü
+        const imageFile = imageUpload.files[0];
+        if (!imageFile) {
+            alert('Lütfen bir görsel yükleyin');
+            return;
         }
 
-        // Her grup için renk kontrolünü ayarla
-        setupColorSelect('param1', 'param2');
-        setupColorSelect('param3', 'param4');
-        setupColorSelect('param5', 'param6');
+        formData.append('image', imageFile);
+        formData.append('hair_style', document.getElementById('hairStyle').value);
+        //formData.append('color', document.getElementById('hairColor').value);
 
-        // Form gönderimi
-        document.getElementById('hairStyleForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
+        // Yükleme başlamadan önce UI güncelleme
+        loadingIndicator.style.display = 'block';
+        results.style.display = 'none';
 
-            // En az bir saç modeli seçilmiş mi kontrol et
-            const selectedStyles = [
-                document.getElementById('param1').value,
-                document.getElementById('param3').value,
-                document.getElementById('param5').value
-            ].filter(value => value !== '');
+        const url = 'https://hairstyle-changer-pro.p.rapidapi.com/facebody/editing/hairstyle-pro';
+        const options = {
+            method: 'POST',
+            headers: {
+                'x-rapidapi-key': '2efdcd7987mshc76755e24485269p143971jsnca3f0e3cb75d',
+                'x-rapidapi-host': 'hairstyle-changer-pro.p.rapidapi.com',
+            },
+            body: formData
+        };
 
-            if (selectedStyles.length === 0) {
-                alert('Lütfen en az bir saç modeli seçiniz.');
-                return;
+        fetch(url, options)
+            .then(response => {
+                if (!response.ok) throw new Error('API request failed');
+                return response.json();
+            })
+            .then(result => {
+                fetchTaskResult(result.task_id);
+            })
+            .catch(error => {
+                console.error(error);
+                loadingIndicator.style.display = 'none';
+                alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+            });
+    }
+
+    async function fetchTaskResult(taskId) {
+        const url = `https://hairstyle-changer-pro.p.rapidapi.com/api/rapidapi/query-async-task-result?task_id=${taskId}`;
+        const options = {
+            method: 'GET',
+            headers: {
+                'x-rapidapi-key': '36d444af4cmsh73f0f6821260de2p1cdad1jsnc8b30fc73655',
+                'x-rapidapi-host': 'hairstyle-changer-pro.p.rapidapi.com',
             }
+        };
 
-            const formData = new FormData();
-            const imageFile = document.getElementById('imageUpload').files[0];
-            if (imageFile) {
-                formData.append('image', imageFile);
-            }
+        try {
+            let taskStatus = 0;
+            let result;
             
-            // Tüm parametreleri ekle
-            for (let i = 1; i <= 6; i++) {
-                const value = document.getElementById(`param${i}`).value;
-                formData.append(`param${i}`, value);
-            }
+            do {
+                const response = await fetch(url, options);
+                if (!response.ok) throw new Error('Failed to fetch task result');
+                result = await response.json();
+                taskStatus = result.task_status;
 
-            // Loading göster
-            document.getElementById('loadingIndicator').style.display = 'block';
-            document.getElementById('results').style.display = 'none';
+                if (taskStatus === 0 || taskStatus === 1) {
+                    await new Promise(resolve => setTimeout(resolve, 30000));
+                }
+            } while (taskStatus === 0 || taskStatus === 1);
 
-            try {
-                const response = await fetch('/api/hairstyle/suggest', {
-                    method: 'POST',
-                    body: formData
-                });
+            loadingIndicator.style.display = 'none';
 
-                if (!response.ok) throw new Error('API yanıt vermedi');
-
-                const data = await response.json();
-                
+            if (taskStatus === 2 && result.data && Array.isArray(result.data.images)) {
                 // Sonuçları göster
-                const suggestedStyles = document.getElementById('suggestedStyles');
-                suggestedStyles.innerHTML = data.images.map(image => `
-                    <div class="col-md-4 mb-3">
-                        <img src="${image}" class="img-fluid rounded" alt="Önerilen stil">
+                results.style.display = 'block';
+                
+                // Görsel sonuçları ekle
+                suggestedStyles.innerHTML = result.data.images.map(imageUrl => `
+                    <div class="col-md-6 mb-3">
+                        <img src="${imageUrl}" class="img-fluid rounded" alt="Önerilen stil">
                     </div>
                 `).join('');
 
-                document.getElementById('suggestionText').textContent = data.suggestion;
-                document.getElementById('results').style.display = 'block';
-            } catch (error) {
-                alert('Bir hata oluştu: ' + error.message);
-            } finally {
-                document.getElementById('loadingIndicator').style.display = 'none';
-            }
-        });
-
-        // Görsel önizleme
-        document.getElementById('imageUpload').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const preview = document.getElementById('imagePreview');
-                    preview.innerHTML = `<img src="${e.target.result}" class="img-fluid mt-2" style="max-height: 200px;">`;
+                // Varsa metin önerisini ekle
+                if (result.data.suggestion) {
+                    suggestionText.textContent = result.data.suggestion;
                 }
-                reader.readAsDataURL(file);
+            } else {
+                throw new Error('Invalid result format');
             }
-        });
-    </script>
-} 
+        } catch (error) {
+            console.error('Error:', error);
+            loadingIndicator.style.display = 'none';
+            alert('Sonuçlar alınırken bir hata oluştu. Lütfen tekrar deneyin.');
+        }
+    }
+
+    // Görsel önizleme için
+    imageUpload.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imagePreview = document.getElementById('imagePreview');
+                imagePreview.innerHTML = `<img src="${e.target.result}" class="img-fluid rounded" style="max-height: 300px; object-fit: contain;" alt="Seçilen görsel">`;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+
