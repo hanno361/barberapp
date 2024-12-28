@@ -57,5 +57,71 @@ namespace Api.Controllers
                 .Include(a => a.User)
                 .ToListAsync();
         }
+
+        // PUT: api/AppointmentApi/updatestatus/5
+        [HttpPut("updatestatus/{id}")]
+        public async Task<IActionResult> UpdateAppointmentStatus(int id, [FromBody] string status)
+        {
+            var appointment = await _context.Appointments.FindAsync(id);
+            if (appointment == null)
+            {
+                return NotFound();
+            }
+
+            appointment.Status = status;
+            await _context.SaveChangesAsync();
+            return Ok(new { message = $"Randevu durumu '{status}' olarak güncellendi." });
+        }
+
+        // Berbere göre randevuları filtrele ve tarihe göre sırala
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<Appointment>>> SearchAppointments(
+            [FromQuery] string? barber = null,
+            [FromQuery] string? status = null,
+            [FromQuery] DateTime? startDate = null)
+        {
+            var query = _context.Appointments
+                .Include(a => a.User)
+                .AsQueryable();
+
+            // LINQ ile filtreleme
+            if (!string.IsNullOrEmpty(barber))
+            {
+                query = query.Where(a => a.Barber == barber);
+            }
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                query = query.Where(a => a.Status == status);
+            }
+
+            if (startDate.HasValue)
+            {
+                query = query.Where(a => a.Date.Date >= startDate.Value.Date);
+            }
+
+            // Tarihe göre sıralama
+            return await query.OrderByDescending(a => a.Date).ToListAsync();
+        }
+
+        // Kullanıcı arama
+        [HttpGet("searchusers")]
+        public async Task<ActionResult<IEnumerable<User>>> SearchUsers([FromQuery] string searchTerm)
+        {
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                return await _context.Users
+                    .Where(u => u.Role != "Admin")
+                    .Take(10)
+                    .ToListAsync();
+            }
+
+            // LINQ ile kullanıcı arama
+            return await _context.Users
+                .Where(u => u.Role != "Admin" && 
+                    (u.FullName.Contains(searchTerm) || 
+                     u.Email.Contains(searchTerm)))
+                .ToListAsync();
+        }
     }
 } 

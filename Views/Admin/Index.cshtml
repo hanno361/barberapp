@@ -3,70 +3,190 @@
 <div class="container">
     <h2>Admin Paneli - Tüm Randevular</h2>
     
-    @if (TempData["Message"] != null)
-    {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["Message"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <!-- Arama Formu -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <select id="berberFilter" class="form-select">
+                        <option value="">Tüm Berberler</option>
+                        <option value="Prof. Dr. Çağrı">Prof. Dr. Çağrı</option>
+                        <option value="Neymarın Berberi">Neymarın Berberi</option>
+                        <option value="Kadir Alkan">Kadir Alkan</option>
+                        <option value="VİP HİZMET">VİP HİZMET</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select id="statusFilter" class="form-select">
+                        <option value="">Tüm Durumlar</option>
+                        <option value="Aktif">Aktif</option>
+                        <option value="Onaylandı">Onaylandı</option>
+                        <option value="İptal edildi">İptal edildi</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input type="date" id="startDate" class="form-control" />
+                </div>
+                <div class="col-md-3">
+                    <button onclick="searchAppointments()" class="btn btn-primary">Ara</button>
+                </div>
+            </div>
         </div>
-    }
-
-    <div class="mb-3">
-        <a href="@Url.Action("Users")" class="btn btn-primary">Kullanıcıları Yönet</a>
     </div>
 
-    @if (Model.Any())
-    {
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Müşteri</th>
-                    <th>Berber</th>
-                    <th>Hizmet</th>
-                    <th>Tarih</th>
-                    <th>Durum</th>
-                    <th>İşlem</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var appointment in Model)
-                {
-                    <tr>
-                        <td>@(appointment.User?.FullName ?? "Kullanıcı Silinmiş")</td>
-                        <td>@appointment.Barber</td>
-                        <td>@appointment.Service</td>
-                        <td>@appointment.Date.ToString("dd/MM/yyyy HH:mm")</td>
+    <!-- Randevu Tablosu -->
+    <div id="appointmentsTable">
+        <!-- Mevcut tablo içeriği -->
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Sayfa yüklendiğinde çalışacak kod
+        $(document).ready(function() {
+            // Otomatik olarak tüm randevuları getir
+            fetch('/api/AppointmentApi/search')
+                .then(response => response.json())
+                .then(appointments => {
+                    const table = document.getElementById('appointmentsTable');
+                    table.innerHTML = generateTableHTML(appointments);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const table = document.getElementById('appointmentsTable');
+                    table.innerHTML = '<div class="alert alert-danger">Randevular yüklenirken bir hata oluştu.</div>';
+                });
+        });
+
+        function searchAppointments() {
+            const berber = document.getElementById('berberFilter').value;
+            const status = document.getElementById('statusFilter').value;
+            const startDate = document.getElementById('startDate').value;
+
+            let url = '/api/AppointmentApi/search';
+            const params = new URLSearchParams();
+            
+            if (berber) params.append('berber', berber);
+            if (status) params.append('status', status);
+            if (startDate) params.append('startDate', startDate);
+
+            const queryString = params.toString();
+            if (queryString) {
+                url += '?' + queryString;
+            }
+
+            // Yükleniyor göstergesi ekle
+            const table = document.getElementById('appointmentsTable');
+            table.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"></div></div>';
+
+            fetch(url)
+                .then(response => response.json())
+                .then(appointments => {
+                    table.innerHTML = generateTableHTML(appointments);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    table.innerHTML = '<div class="alert alert-danger">Randevular yüklenirken bir hata oluştu.</div>';
+                });
+        }
+
+        function generateTableHTML(appointments) {
+            if (appointments.length === 0) {
+                return '<p>Sonuç bulunamadı.</p>';
+            }
+
+            let html = `
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Müşteri</th>
+                            <th>Berber</th>
+                            <th>Hizmet</th>
+                            <th>Tarih</th>
+                            <th>Durum</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+            appointments.forEach(app => {
+                html += `
+                    <tr data-appointment-id="${app.id}">
+                        <td>${app.user ? app.user.fullName : 'Kullanıcı Silinmiş'}</td>
+                        <td>${app.barber}</td>
+                        <td>${app.service}</td>
+                        <td>${new Date(app.date).toLocaleString('tr-TR')}</td>
                         <td>
-                            <span class="badge @(appointment.Status == "Onaylandı" ? "bg-success" : 
-                                               appointment.Status == "İptal edildi" ? "bg-danger" : 
-                                               "bg-warning")">
-                                @appointment.Status
+                            <span class="status-badge badge ${app.status === 'Onaylandı' ? 'bg-success' : 
+                                           app.status === 'İptal edildi' ? 'bg-danger' : 
+                                           'bg-warning'}">
+                                ${app.status}
                             </span>
                         </td>
-                        <td>
-                            @if (appointment.Status != "Onaylandı" && appointment.Status != "İptal edildi")
-                            {
+                        <td class="action-buttons">
+                            ${app.status !== 'İptal edildi' ? `
                                 <div class="btn-group">
-                                    <form asp-action="UpdateStatus" method="post" style="display: inline;">
-                                        <input type="hidden" name="id" value="@appointment.Id" />
-                                        <input type="hidden" name="status" value="Onaylandı" />
-                                        <button type="submit" class="btn btn-success btn-sm mx-1">Onayla</button>
-                                    </form>
-                                    <form asp-action="UpdateStatus" method="post" style="display: inline;">
-                                        <input type="hidden" name="id" value="@appointment.Id" />
-                                        <input type="hidden" name="status" value="İptal edildi" />
-                                        <button type="submit" class="btn btn-danger btn-sm">İptal Et</button>
-                                    </form>
+                                    ${app.status !== 'Onaylandı' ? `
+                                        <button onclick="updateStatus(${app.id}, 'Onaylandı')" 
+                                                class="btn btn-success btn-sm mx-1">Onayla</button>
+                                    ` : ''}
+                                    <button onclick="updateStatus(${app.id}, 'İptal edildi')" 
+                                            class="btn btn-danger btn-sm">İptal Et</button>
                                 </div>
-                            }
+                            ` : ''}
                         </td>
-                    </tr>
+                    </tr>`;
+            });
+
+            html += `</tbody></table>`;
+            return html;
+        }
+
+        function updateStatus(id, status) {
+            if (status === 'İptal edildi') {
+                if (!confirm('Bu randevuyu iptal etmek istediğinize emin misiniz?')) {
+                    return;
                 }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <p>Henüz randevu bulunmamaktadır.</p>
-    }
-</div> 
+            }
+
+            fetch(`/api/AppointmentApi/updatestatus/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(status)
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Başarılı güncelleme mesajı
+                alert(data.message);
+                
+                // Sadece ilgili randevunun görünümünü güncelle
+                const row = document.querySelector(`tr[data-appointment-id="${id}"]`);
+                const statusCell = row.querySelector('.status-badge');
+                const actionCell = row.querySelector('.action-buttons');
+                
+                // Status badge'ini güncelle
+                statusCell.className = `badge ${status === 'Onaylandı' ? 'bg-success' : 
+                                         status === 'İptal edildi' ? 'bg-danger' : 
+                                         'bg-warning'}`;
+                statusCell.textContent = status;
+                
+                // İşlem butonlarını güncelle
+                if (status === 'İptal edildi') {
+                    actionCell.innerHTML = '';
+                } else if (status === 'Onaylandı') {
+                    actionCell.innerHTML = `
+                        <div class="btn-group">
+                            <button onclick="updateStatus(${id}, 'İptal edildi')" 
+                                    class="btn btn-danger btn-sm">İptal Et</button>
+                        </div>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Güncelleme sırasında bir hata oluştu.');
+            });
+        }
+    </script>
+} 
